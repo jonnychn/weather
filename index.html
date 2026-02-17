@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>San Leandro, CA Weather</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .location {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .location h1 {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .location .date {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+
+  .current-weather {
+    text-align: center;
+    padding: 30px 0;
+  }
+  .current-weather .temp {
+    font-size: 96px;
+    font-weight: 200;
+    line-height: 1;
+  }
+  .current-weather .condition {
+    font-size: 20px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 8px;
+  }
+  .current-weather .high-low {
+    font-size: 16px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+
+  .weather-icon {
+    font-size: 64px;
+    margin-bottom: 8px;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 24px 0 36px;
+  }
+  .detail-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .detail-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .detail-card .value {
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .detail-card .unit {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .forecast-container {
+    background: rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 24px;
+  }
+
+  .forecast-day {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .forecast-day:last-child {
+    border-bottom: none;
+  }
+  .forecast-day .day-name {
+    width: 100px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .forecast-day .day-name .day-date {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+  }
+  .forecast-day .day-icon {
+    width: 40px;
+    font-size: 22px;
+    text-align: center;
+  }
+  .forecast-day .day-condition {
+    flex: 1;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    padding: 0 16px;
+  }
+  .forecast-day .day-precip {
+    width: 60px;
+    font-size: 13px;
+    color: #5dade2;
+    text-align: center;
+  }
+  .forecast-day .temp-range {
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .forecast-day .temp-high {
+    font-size: 16px;
+    font-weight: 500;
+    width: 38px;
+    text-align: right;
+  }
+  .forecast-day .temp-low {
+    font-size: 16px;
+    color: rgba(255,255,255,0.4);
+    width: 38px;
+    text-align: right;
+  }
+  .forecast-day .temp-bar-container {
+    width: 80px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .forecast-day .temp-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #5dade2, #f39c12);
+  }
+
+  .alert-banner {
+    background: rgba(231, 76, 60, 0.15);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #e8a0a0;
+  }
+  .alert-banner .alert-icon {
+    font-size: 18px;
+  }
+
+  .sun-info {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  @media (max-width: 600px) {
+    .details-grid { grid-template-columns: repeat(2, 1fr); }
+    .current-weather .temp { font-size: 72px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="location">
+    <h1>San Leandro, CA</h1>
+    <div class="date" id="currentDate"></div>
+  </div>
+
+  <div class="current-weather">
+    <div class="weather-icon">🌧️</div>
+    <div class="temp">50°</div>
+    <div class="condition">Overcast</div>
+    <div class="high-low">H: 53° &nbsp; L: 43°</div>
+    <div class="sun-info">
+      <span>☀️ Sunrise 6:57 AM</span>
+      <span>🌙 Sunset 5:48 PM</span>
+    </div>
+  </div>
+
+  <div class="alert-banner">
+    <span class="alert-icon">⚠️</span>
+    <span>Coastal Flood Advisory in effect through Tuesday, 3:00 PM PST</span>
+  </div>
+
+  <div class="details-grid">
+    <div class="detail-card">
+      <div class="label">Feels Like</div>
+      <div class="value">50°</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Humidity</div>
+      <div class="value">86%</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Wind</div>
+      <div class="value">5 mph</div>
+      <div class="unit">ESE</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Visibility</div>
+      <div class="value">10</div>
+      <div class="unit">miles</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Pressure</div>
+      <div class="value">29.6</div>
+      <div class="unit">in</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Dew Point</div>
+      <div class="value">46°</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">UV Index</div>
+      <div class="value">1</div>
+      <div class="unit">Low</div>
+    </div>
+    <div class="detail-card">
+      <div class="label">Precip</div>
+      <div class="value">80%</div>
+      <div class="unit">chance</div>
+    </div>
+  </div>
+
+  <div class="section-title">10-Day Forecast</div>
+  <div class="forecast-container">
+
+    <div class="forecast-day">
+      <div class="day-name">Tonight<div class="day-date">Feb 16</div></div>
+      <div class="day-icon">🌧️</div>
+      <div class="day-condition">Chance Light Rain</div>
+      <div class="day-precip">💧</div>
+      <div class="temp-range">
+        <span class="temp-low">43°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:25%"></div></div>
+        <span class="temp-high"></span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Tuesday<div class="day-date">Feb 17</div></div>
+      <div class="day-icon">⛈️</div>
+      <div class="day-condition">Showers & Thunderstorms</div>
+      <div class="day-precip">💧 100%</div>
+      <div class="temp-range">
+        <span class="temp-low">38°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:55%"></div></div>
+        <span class="temp-high">52°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Wednesday<div class="day-date">Feb 18</div></div>
+      <div class="day-icon">🌧️</div>
+      <div class="day-condition">Light Rain Likely</div>
+      <div class="day-precip">💧 80%</div>
+      <div class="temp-range">
+        <span class="temp-low">41°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:55%"></div></div>
+        <span class="temp-high">52°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Thursday<div class="day-date">Feb 19</div></div>
+      <div class="day-icon">🌧️</div>
+      <div class="day-condition">Light Rain</div>
+      <div class="day-precip">💧 90%</div>
+      <div class="temp-range">
+        <span class="temp-low">37°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:55%"></div></div>
+        <span class="temp-high">52°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Friday<div class="day-date">Feb 20</div></div>
+      <div class="day-icon">🌤️</div>
+      <div class="day-condition">Chance Light Rain</div>
+      <div class="day-precip">💧 40%</div>
+      <div class="temp-range">
+        <span class="temp-low">39°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:60%"></div></div>
+        <span class="temp-high">54°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Saturday<div class="day-date">Feb 21</div></div>
+      <div class="day-icon">🌤️</div>
+      <div class="day-condition">Chance Light Rain</div>
+      <div class="day-precip">💧 30%</div>
+      <div class="temp-range">
+        <span class="temp-low">45°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:70%"></div></div>
+        <span class="temp-high">58°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Sunday<div class="day-date">Feb 22</div></div>
+      <div class="day-icon">🌧️</div>
+      <div class="day-condition">Rain</div>
+      <div class="day-precip">💧 90%</div>
+      <div class="temp-range">
+        <span class="temp-low">50°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:80%"></div></div>
+        <span class="temp-high">61°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Monday<div class="day-date">Feb 23</div></div>
+      <div class="day-icon">🌧️</div>
+      <div class="day-condition">Light Rain</div>
+      <div class="day-precip">💧 80%</div>
+      <div class="temp-range">
+        <span class="temp-low">50°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:80%"></div></div>
+        <span class="temp-high">61°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Tuesday<div class="day-date">Feb 24</div></div>
+      <div class="day-icon">🌤️</div>
+      <div class="day-condition">Partly Sunny</div>
+      <div class="day-precip">💧 20%</div>
+      <div class="temp-range">
+        <span class="temp-low">44°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:70%"></div></div>
+        <span class="temp-high">58°</span>
+      </div>
+    </div>
+
+    <div class="forecast-day">
+      <div class="day-name">Wednesday<div class="day-date">Feb 25</div></div>
+      <div class="day-icon">🌤️</div>
+      <div class="day-condition">Mostly Sunny</div>
+      <div class="day-precip"></div>
+      <div class="temp-range">
+        <span class="temp-low">42°</span>
+        <div class="temp-bar-container"><div class="temp-bar" style="width:75%"></div></div>
+        <span class="temp-high">60°</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Weather data from NWS &bull; Last updated Feb 16, 2026 5:54 PM PST
+  </div>
+</div>
+
+<script>
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+  document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+</script>
+
+</body>
+</html>
